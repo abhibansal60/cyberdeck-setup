@@ -1,0 +1,24 @@
+// ~/.config/zellij/config.kdl — "CYBERDECK" theme, matching starship.toml / Ptyxis palette / status line.
+
+themes {
+    cyberdeck {
+        fg 228 224 240       // #e4e0f0 soft lavender-white
+        bg 13 2 33           // #0d0221 bg_shade
+        black 23 10 46       // #170a2e
+        red 255 0 60         // #ff003c error_red
+        green 57 255 20      // #39ff14 matrix_green
+        yellow 255 204 77    // #ffcc4d
+        blue 125 91 237      // #7d5bed deep_purple
+        magenta 157 75 255   // #9d4bff cyber_purple
+        orange 255 176 0     // #ffb000 warn_amber
+        cyan 0 255 249       // #00fff9 neon_cyan
+        white 207 201 224    // #cfc9e0
+    }
+}
+
+theme "cyberdeck"
+
+mouse_mode true
+pane_frames true
+default_mode "normal"
+scrollback_editor "nano"

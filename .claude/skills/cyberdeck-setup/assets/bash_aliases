@@ -1,0 +1,219 @@
+#!/usr/bin/env bash
+# ~/.bash_aliases — dev shortcuts. Run `dh` or `devhelp` to list everything below.
+# Sourced automatically by ~/.bashrc.
+
+# ---------------------------------------------------------------------------
+# Claude Code
+# ---------------------------------------------------------------------------
+alias cc='claude'                                    # launch Claude Code
+alias ccc='claude --continue'                         # continue most recent conversation here
+alias ccr='claude --resume'                           # open the session picker
+alias ccp='claude --print'                            # one-shot, non-interactive (pipeable)
+alias ccplan='claude --permission-mode plan'          # start in plan mode
+alias ccauto='claude --permission-mode auto'          # start in auto mode
+alias ccyolo='claude --dangerously-skip-permissions'  # bypass all permission checks — trusted/sandboxed dirs only
+
+# ---------------------------------------------------------------------------
+# Git
+# ---------------------------------------------------------------------------
+alias g='git'
+alias gs='git status -sb'
+alias ga='git add'
+alias gaa='git add -A'
+alias gc='git commit -m'
+alias gca='git commit --amend'
+alias gp='git push'
+alias gpl='git pull'
+alias gco='git checkout'
+alias gcb='git checkout -b'
+alias gb='git branch'
+alias gd='git diff'
+alias gds='git diff --staged'
+alias gl='git log --oneline --graph --decorate -20'
+alias gla='git log --oneline --graph --decorate --all -20'
+alias gst='git stash'
+alias gstp='git stash pop'
+
+# ---------------------------------------------------------------------------
+# Docker
+# ---------------------------------------------------------------------------
+alias d='docker'
+alias dc='docker compose'
+alias dps='docker ps'
+alias dpsa='docker ps -a'
+alias di='docker images'
+alias dcu='docker compose up -d'
+alias dcd='docker compose down'
+alias dcl='docker compose logs -f'
+alias dprune='docker system prune -f'
+
+# ---------------------------------------------------------------------------
+# Python / Conda
+# ---------------------------------------------------------------------------
+alias py='python3'
+alias venv='python3 -m venv .venv && source .venv/bin/activate'
+alias activate='source .venv/bin/activate'
+alias ca='conda activate'
+alias cda='conda deactivate'
+alias cel='conda env list'
+
+# ---------------------------------------------------------------------------
+# Node / npm
+# ---------------------------------------------------------------------------
+alias ni='npm install'
+alias nid='npm install --save-dev'
+alias nr='npm run'
+alias nrd='npm run dev'
+alias nrb='npm run build'
+alias nrt='npm run test'
+
+# ---------------------------------------------------------------------------
+# Navigation & filesystem
+# ---------------------------------------------------------------------------
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias ll='eza -la --icons --group-directories-first --git'
+alias la='eza -a --icons --group-directories-first'
+alias l='eza --icons --group-directories-first'
+alias lt='eza --tree --icons --level=2 --group-directories-first'
+alias cat='bat --paging=never --style=plain'
+alias grep='grep --color=auto'
+
+# ---------------------------------------------------------------------------
+# Modern CLI tools — zoxide (z/zi) and fzf init live in ~/.bashrc.
+# ---------------------------------------------------------------------------
+alias zz='zi'   # interactive zoxide picker
+
+# ---------------------------------------------------------------------------
+# Zellij (zj prefix — z/zi/zz are already taken by zoxide above)
+# ---------------------------------------------------------------------------
+alias zj='zellij'
+alias zja='zellij attach'
+alias zjn='zellij --session'
+alias zjls='zellij list-sessions'
+alias zjk='zellij kill-session'
+
+# ---------------------------------------------------------------------------
+# System / network
+# ---------------------------------------------------------------------------
+alias update='sudo apt update && sudo apt upgrade -y'
+alias top='btop'
+alias htop='btop'
+alias ports='sudo ss -tulpn'
+alias myip='curl -s ifconfig.me'
+alias reload='source ~/.bashrc && echo "bashrc reloaded"'
+alias path='echo -e "${PATH//:/\\n}"'
+
+# ---------------------------------------------------------------------------
+# Functions
+# ---------------------------------------------------------------------------
+mkcd() { mkdir -p "$1" && cd "$1" || return; }
+
+extract() {
+    if [ -f "$1" ]; then
+        case "$1" in
+            *.tar.bz2) tar xjf "$1" ;;
+            *.tar.gz)  tar xzf "$1" ;;
+            *.tar.xz)  tar xJf "$1" ;;
+            *.bz2)     bunzip2 "$1" ;;
+            *.gz)      gunzip "$1" ;;
+            *.tar)     tar xf "$1" ;;
+            *.zip)     unzip "$1" ;;
+            *.7z)      7z x "$1" ;;
+            *) echo "extract: don't know how to extract '$1'" ;;
+        esac
+    else
+        echo "extract: '$1' is not a valid file"
+    fi
+}
+
+# ---------------------------------------------------------------------------
+# devhelp — lists every alias/function above, grouped and colorized
+# ---------------------------------------------------------------------------
+devhelp() {
+    local purple='\033[1;38;2;157;75;255m'
+    local green='\033[1;38;2;57;255;20m'
+    local cyan='\033[38;2;0;255;249m'
+    local grey='\033[38;2;92;92;110m'
+    local reset='\033[0m'
+
+    print_row() { printf "  ${green}%-12s${reset} ${grey}%s${reset}\n" "$1" "$2"; }
+
+    echo -e "${purple}┌─ dev aliases ──────────────────────────────────────────${reset}"
+    echo -e "${cyan}Claude Code${reset}"
+    print_row "cc"      "claude"
+    print_row "ccc"     "claude --continue"
+    print_row "ccr"     "claude --resume"
+    print_row "ccp"     "claude --print (one-shot, pipeable)"
+    print_row "ccplan"  "claude --permission-mode plan"
+    print_row "ccauto"  "claude --permission-mode auto"
+    print_row "ccyolo"  "claude --dangerously-skip-permissions"
+    echo ""
+    echo -e "${cyan}Git${reset}"
+    print_row "g"   "git"
+    print_row "gs"  "git status -sb"
+    print_row "ga / gaa" "git add / git add -A"
+    print_row "gc"  "git commit -m"
+    print_row "gca" "git commit --amend"
+    print_row "gp / gpl" "git push / git pull"
+    print_row "gco / gcb" "git checkout / git checkout -b"
+    print_row "gb"  "git branch"
+    print_row "gd / gds" "git diff / git diff --staged"
+    print_row "gl / gla" "git log (graph) / git log --all (graph)"
+    print_row "gst / gstp" "git stash / git stash pop"
+    echo ""
+    echo -e "${cyan}Docker${reset}"
+    print_row "d / dc"  "docker / docker compose"
+    print_row "dps / dpsa" "docker ps / docker ps -a"
+    print_row "di"      "docker images"
+    print_row "dcu / dcd" "docker compose up -d / down"
+    print_row "dcl"     "docker compose logs -f"
+    print_row "dprune"  "docker system prune -f"
+    echo ""
+    echo -e "${cyan}Python / Conda${reset}"
+    print_row "py"       "python3"
+    print_row "venv"     "create .venv and activate it"
+    print_row "activate" "source .venv/bin/activate"
+    print_row "ca / cda" "conda activate / conda deactivate"
+    print_row "cel"      "conda env list"
+    echo ""
+    echo -e "${cyan}Node / npm${reset}"
+    print_row "ni / nid" "npm install / npm install --save-dev"
+    print_row "nr"       "npm run"
+    print_row "nrd / nrb / nrt" "npm run dev / build / test"
+    echo ""
+    echo -e "${cyan}Navigation & filesystem${reset}"
+    print_row ".. / ... / ...." "cd up 1 / 2 / 3 levels"
+    print_row "ll / la / l" "eza -la / eza -a / eza (icons, git status)"
+    print_row "lt"      "eza --tree (2 levels)"
+    print_row "cat"     "bat --paging=never (syntax highlighting)"
+    print_row "mkcd <dir>" "mkdir -p <dir> && cd <dir>"
+    print_row "extract <f>" "unarchive .tar/.gz/.zip/.7z/etc"
+    echo ""
+    echo -e "${cyan}Modern CLI tools${reset}"
+    print_row "z <dir>"  "zoxide — jump to a frecent directory"
+    print_row "zz / zi"  "zoxide interactive picker"
+    print_row "Ctrl+R"   "fzf fuzzy history search"
+    print_row "Ctrl+T"   "fzf fuzzy file search (inserts path)"
+    print_row "Alt+C"    "fzf fuzzy cd into a subdirectory"
+    print_row "git diff" "now rendered through delta (side-by-side)"
+    echo ""
+    echo -e "${cyan}Zellij${reset}"
+    print_row "zj"          "zellij"
+    print_row "zjn <name>"  "zellij --session <name>"
+    print_row "zja <name>"  "zellij attach <name>"
+    print_row "zjls"        "zellij list-sessions"
+    print_row "zjk <name>"  "zellij kill-session <name>"
+    echo ""
+    echo -e "${cyan}System / network${reset}"
+    print_row "update" "sudo apt update && upgrade -y"
+    print_row "top / htop" "btop (themed system monitor)"
+    print_row "ports"  "sudo ss -tulpn"
+    print_row "myip"   "curl -s ifconfig.me"
+    print_row "reload" "source ~/.bashrc"
+    print_row "path"   "print \$PATH, one entry per line"
+    echo -e "${purple}└────────────────────────────────────────────────────────${reset}"
+    echo -e "${grey}source: ~/.bash_aliases  ·  edit it and run 'reload' to apply${reset}"
+}
+alias dh='devhelp'

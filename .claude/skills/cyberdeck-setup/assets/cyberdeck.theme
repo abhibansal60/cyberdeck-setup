@@ -1,0 +1,91 @@
+# "CYBERDECK" — matches ~/.config/starship.toml / Ptyxis palette / zellij / Claude status line.
+
+# Main background, empty for terminal default
+theme[main_bg]="#0d0221"
+
+# Main text color
+theme[main_fg]="#e4e0f0"
+
+# Title color for boxes
+theme[title]="#e4e0f0"
+
+# Highlight color for keyboard shortcuts
+theme[hi_fg]="#9d4bff"
+
+# Background color of selected item in processes box
+theme[selected_bg]="#9d4bff"
+
+# Foreground color of selected item in processes box
+theme[selected_fg]="#0d0221"
+
+# Color of inactive/disabled text
+theme[inactive_fg]="#5c5c6e"
+
+# Color of text appearing on top of graphs
+theme[graph_text]="#e4e0f0"
+
+# Background color of the percentage meters
+theme[meter_bg]="#170a2e"
+
+# Misc colors for processes box
+theme[proc_misc]="#00fff9"
+
+# Cpu box outline color
+theme[cpu_box]="#9d4bff"
+
+# Memory/disks box outline color
+theme[mem_box]="#39ff14"
+
+# Net up/down box outline color
+theme[net_box]="#00fff9"
+
+# Processes box outline color
+theme[proc_box]="#ffb000"
+
+# Box divider line and small boxes line color
+theme[div_line]="#5c5c6e"
+
+# Temperature graph colors — cool to hot
+theme[temp_start]="#39ff14"
+theme[temp_mid]="#ffb000"
+theme[temp_end]="#ff003c"
+
+# CPU graph colors
+theme[cpu_start]="#00ff9f"
+theme[cpu_mid]="#9d4bff"
+theme[cpu_end]="#00fff9"
+
+# Mem/Disk free meter
+theme[free_start]="#00ff9f"
+theme[free_mid]="#39ff14"
+theme[free_end]="#39ff14"
+
+# Mem/Disk cached meter
+theme[cached_start]="#6dfffb"
+theme[cached_mid]="#00fff9"
+theme[cached_end]="#00fff9"
+
+# Mem/Disk available meter
+theme[available_start]="#ffcc4d"
+theme[available_mid]="#ffb000"
+theme[available_end]="#ffb000"
+
+# Mem/Disk used meter
+theme[used_start]="#c299ff"
+theme[used_mid]="#9d4bff"
+theme[used_end]="#7d5bed"
+
+# Download graph colors
+theme[download_start]="#39ff14"
+theme[download_mid]="#00fff9"
+theme[download_end]="#00fff9"
+
+# Upload graph colors
+theme[upload_start]="#9d4bff"
+theme[upload_mid]="#ffb000"
+theme[upload_end]="#ffb000"
+
+# Process box color gradient for threads, mem and cpu usage
+theme[process_start]="#39ff14"
+theme[process_mid]="#9d4bff"
+theme[process_end]="#5c5c6e"

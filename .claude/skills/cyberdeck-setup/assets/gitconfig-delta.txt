@@ -1,0 +1,29 @@
+[core]
+	pager = delta
+
+[interactive]
+	diffFilter = delta --color-only
+
+[delta]
+	navigate = true
+	line-numbers = true
+	side-by-side = true
+	syntax-theme = Dracula
+	file-style = "#9d4bff" bold
+	file-decoration-style = "#7d5bed" ul
+	hunk-header-style = file line-number syntax
+	hunk-header-decoration-style = "#00fff9" box
+	line-numbers-left-color = "#5c5c6e"
+	line-numbers-right-color = "#5c5c6e"
+	line-numbers-minus-color = "#ff003c"
+	line-numbers-plus-color = "#39ff14"
+	minus-style = syntax "#2d0a14"
+	minus-emph-style = syntax "#5c1428"
+	plus-style = syntax "#0d2818"
+	plus-emph-style = syntax "#145c34"
+
+[merge]
+	conflictstyle = diff3
+
+[diff]
+	colorMoved = default

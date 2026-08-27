@@ -1,0 +1,173 @@
+# ~/.config/starship.toml
+# "CYBERDECK" — a matrix-green / cyber-purple prompt for long AI dev sessions.
+# Two-line layout: context line, then a clean input line.
+
+"$schema" = 'https://starship.rs/config-schema.json'
+
+format = """
+[┌─](bold #7d5bed)$os$username$hostname$directory$git_branch$git_status$git_state$c$python$nodejs$golang$rust$docker_context$conda$cmd_duration
+[└─$character](bold #7d5bed)"""
+
+right_format = "$time"
+
+add_newline = true
+palette = "cyberdeck"
+
+[palettes.cyberdeck]
+matrix_green   = "#39ff14"
+soft_green     = "#00ff9f"
+cyber_purple   = "#9d4bff"
+deep_purple    = "#7d5bed"
+neon_cyan      = "#00fff9"
+warn_amber     = "#ffb000"
+error_red      = "#ff003c"
+muted_grey     = "#5c5c6e"
+bg_shade       = "#0d0221"
+
+# ---------------------------------------------------------------------------
+# OS + user/host (only shown over SSH, keeps local prompt minimal)
+# ---------------------------------------------------------------------------
+[os]
+disabled = true
+
+[username]
+style_user = "bold cyber_purple"
+style_root = "bold error_red"
+format = "[$user]($style)@"
+disabled = false
+show_always = false
+
+[hostname]
+ssh_only = true
+format = "[$hostname](bold neon_cyan) "
+disabled = false
+
+# ---------------------------------------------------------------------------
+# Directory — clean, truncated, home shortened to ~
+# ---------------------------------------------------------------------------
+[directory]
+style = "bold soft_green"
+format = "[ $path]($style)[$read_only]($read_only_style) "
+truncation_length = 3
+truncate_to_repo = true
+truncation_symbol = "…/"
+home_symbol = "~"
+read_only = " 🔒"
+read_only_style = "error_red"
+
+[directory.substitutions]
+"~/code" = "◆ code"
+
+# ---------------------------------------------------------------------------
+# Git — visual anchor: branch glyph + status glyphs, high contrast purple/green
+# ---------------------------------------------------------------------------
+[git_branch]
+symbol = "Ψ "
+style = "bold cyber_purple"
+format = "on [$symbol$branch]($style) "
+truncation_length = 24
+truncation_symbol = "…"
+
+[git_status]
+style = "bold warn_amber"
+format = "[($all_status$ahead_behind)]($style) "
+conflicted = "‡ "
+ahead = "⇡${count} "
+behind = "⇣${count} "
+diverged = "⇕⇡${ahead_count}⇣${behind_count} "
+up_to_date = ""
+untracked = "? "
+stashed = "§ "
+modified = "! "
+staged = "+${count} "
+renamed = "» "
+deleted = "✘ "
+
+[git_state]
+style = "bold error_red"
+format = "[\\($state( $progress_current/$progress_total)\\)]($style) "
+
+# ---------------------------------------------------------------------------
+# Languages / runtimes — Python (incl. Conda), Node, Go, Rust
+# ---------------------------------------------------------------------------
+[conda]
+symbol = "⚛ "
+style = "bold neon_cyan"
+format = "[$symbol$environment]($style) "
+ignore_base = true
+
+[python]
+symbol = "λ "
+style = "bold soft_green"
+format = "[$symbol$pyenv_prefix($version )(\\($virtualenv\\) )]($style)"
+detect_extensions = ["py"]
+
+[nodejs]
+symbol = "‣ "
+style = "bold matrix_green"
+format = "[$symbol($version )]($style)"
+
+[golang]
+symbol = "Ω "
+style = "bold neon_cyan"
+format = "[$symbol($version )]($style)"
+
+[rust]
+symbol = "⚙ "
+style = "bold error_red"
+format = "[$symbol($version )]($style)"
+
+[c]
+symbol = "▪ "
+style = "bold muted_grey"
+format = "[$symbol($version )]($style)"
+
+[docker_context]
+symbol = "⎈ "
+style = "bold neon_cyan"
+format = "[$symbol$context]($style) "
+only_with_files = true
+
+# ---------------------------------------------------------------------------
+# Execution time — visual anchor for long AI/build/train runs
+# ---------------------------------------------------------------------------
+[cmd_duration]
+min_time = 500
+style = "bold warn_amber"
+format = "took [$duration]($style) "
+show_milliseconds = false
+
+# ---------------------------------------------------------------------------
+# Clock — right-aligned, muted, unobtrusive timestamp
+# ---------------------------------------------------------------------------
+[time]
+disabled = false
+time_format = "%H:%M:%S"
+style = "muted_grey"
+format = "[$time]($style)"
+
+# ---------------------------------------------------------------------------
+# Prompt character — green on success, red on failure, clear glyph shift
+# ---------------------------------------------------------------------------
+[character]
+success_symbol = "[❯](bold matrix_green)"
+error_symbol = "[❯](bold error_red)"
+vimcmd_symbol = "[❮](bold cyber_purple)"
+
+[status]
+disabled = false
+style = "bold error_red"
+symbol = "✘ "
+format = "[$symbol$status]($style) "
+
+[jobs]
+symbol = "✦ "
+style = "bold cyber_purple"
+number_threshold = 1
+format = "[$symbol]($style)"
+
+[battery]
+disabled = true
+
+[line_break]
+disabled = false
