@@ -79,6 +79,11 @@ Use `AskUserQuestion` (multiSelect) with one line per component, e.g.:
 - **zellij** — themed terminal multiplexer
 - **btop** — themed system monitor
 - **bash aliases + `dh` help command** — dev shortcuts (git, docker, npm, etc.) plus a colorized help listing
+- **GitHub CLI (`gh`)** — installed and ready for the user to authenticate
+
+`cyberdeck-doctor` (see its own section near the end of Step 2) is **not** one of
+these choices — it's installed unconditionally at the end, since it's the tool for
+checking the state of everything else, including pieces the user chose to skip.
 
 Don't install anything the user didn't select. Each is independent — none depend on
 another except that most of them look better once the font step has run.
@@ -357,6 +362,60 @@ EOF
 Validate: `bash -n ~/.bash_aliases`, then a live check that `dh` resolves and runs
 without error in an interactive shell.
 
+### GitHub CLI (`gh`)
+
+Install like every other tool here — `cli/cli`, asset `gh_*_linux_<goarch>.tar.gz`
+(`amd64`/`arm64`; the binary is nested one directory deep, at `bin/gh` inside the
+extracted folder).
+
+**Authentication is the one step in this whole skill that cannot be automated safely
+or silently** — don't try. `gh auth login` is an interactive device-code/browser flow
+by design. After installing the binary, tell the user to run it themselves:
+
+```
+gh auth login
+```
+
+(suggest `GitHub.com` → `HTTPS` → `Login with a web browser`).
+
+If the user instead pastes a personal access token directly into the conversation,
+you *can* use it — pipe it straight into `gh auth login --with-token`, which hands it
+to `gh`'s own credential storage (OS keyring) without ever writing it to a file:
+```bash
+echo "$TOKEN" | gh auth login --with-token
+```
+When this happens, say so plainly: mention that pasting tokens into chat means it's
+sitting in that conversation's history, and that the user may want to rotate/revoke it
+on GitHub afterward if that matters to them. Never `echo`, log, write to a file
+(including this skill's own asset files), or otherwise persist the raw token anywhere
+outside that one `gh auth login` invocation.
+
+Verify: `gh auth status` (exit 0 = authenticated).
+
+### `cyberdeck-doctor` (always installed, regardless of Step 1 selections)
+
+Copy `assets/cyberdeck-doctor` to `~/.local/bin/cyberdeck-doctor` and `chmod +x` it.
+It's a standalone, read-only status script — running it makes no changes, so it's safe
+to install and run even for components the user chose not to set up (they'll just show
+as missing, which is correct and useful information, not an error).
+
+It checks, per component: is the binary on `$PATH` (and its `--version`), is the
+relevant config file present, and — where it's cheap to check — whether that config
+file actually reflects the cyberdeck theme rather than just existing. It also
+specifically flags if the broken `NerdFontMono` variant is present (see **Known
+gotchas**), since that's a silent trap otherwise. It's already aliased as `doctor` in
+`assets/bash_aliases`.
+
+Two things worth knowing if you extend `cyberdeck-doctor` for a new component:
+- Any `$(...)` output you show the user should be passed through the script's
+  `strip_ansi` helper first — several tools (`btop --version`, some `delta` builds)
+  embed their own ANSI color codes in `--version` output, which garbles the doctor
+  script's own coloring if piped straight through unstripped.
+- Match family/theme names precisely enough to avoid false positives. e.g. checking
+  `fc-list | grep "JetBrainsMono Nerd Font"` alone would also match the broken `...Nerd
+  Font Mono` family as a substring — anchor on the delimiter that follows the name in
+  that tool's actual output (here, a trailing `,` or `:`) instead.
+
 ## Step 3 — Final verification pass
 
 Before reporting done, actually re-check everything, don't just trust each step's own
@@ -367,6 +426,8 @@ Before reporting done, actually re-check everything, don't just trust each step'
   `starship prompt --status=0`, a mock statusline payload, a real diff through delta)
 - Confirm nothing in `~/.bashrc`/`~/.bash_aliases`/`~/.gitconfig` got duplicated if this
   skill is being re-run on a machine it already touched
+- Finish with `cyberdeck-doctor` itself and read its output — it's the single source
+  of truth for what actually landed vs what silently didn't
 
 ## Step 4 — Report back
 
@@ -375,7 +436,7 @@ Tell the user plainly:
   touched `/usr` or needed root)
 - What requires a new terminal tab/window (or full app restart) to actually show up
 - What was terminal-specific and either automated or left as manual instructions
-- Run `dh` for the full alias/shortcut reference
+- Run `dh` for the full alias/shortcut reference, `doctor` any time to re-check status
 
 ## Known gotchas (read before debugging from scratch)
 
@@ -396,3 +457,12 @@ Tell the user plainly:
 - **No sudo, no problem**: every tool here ships a portable Linux binary/tarball on its
   GitHub releases page. Don't reach for `apt`/`snap` first — they need root and this
   skill is designed to never need it.
+- **Never automate `gh auth login`, and never persist a token the user pastes.** If a
+  user pastes a PAT into the conversation, pipe it directly into
+  `gh auth login --with-token` and nowhere else — not a file, not a log, not an asset
+  template, not this skill's own repo. Tell the user plainly that a token pasted into
+  chat lives in that conversation's history, so they can decide whether to rotate it.
+- **`--version` output isn't always plain text.** Some tools (`btop`, some `delta`
+  builds) embed their own ANSI color codes even when piped. If you're composing that
+  output into another colored line (like `cyberdeck-doctor` does), strip escape codes
+  first (`sed -E 's/\x1b\[[0-9;]*m//g'`) or the two color schemes will visibly clash.

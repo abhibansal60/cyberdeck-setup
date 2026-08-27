@@ -1,0 +1,126 @@
+#!/usr/bin/env bash
+# cyberdeck-doctor — reports what's installed/configured vs missing for the
+# Cyberdeck Setup skill. Safe to run any time; makes no changes.
+
+purple='\033[1;38;2;157;75;255m'
+green='\033[1;38;2;57;255;20m'
+red='\033[1;38;2;255;0;60m'
+cyan='\033[38;2;0;255;249m'
+grey='\033[38;2;92;92;110m'
+reset='\033[0m'
+
+ok_count=0
+total_count=0
+
+strip_ansi() { sed -E 's/\x1b\[[0-9;]*m//g' <<< "$1"; }
+ok()   { printf "  ${green}✓${reset} %-28s ${grey}%s${reset}\n" "$1" "$(strip_ansi "$2")"; ok_count=$((ok_count+1)); total_count=$((total_count+1)); }
+miss() { printf "  ${red}✗${reset} %-28s ${grey}%s${reset}\n" "$1" "$(strip_ansi "$2")"; total_count=$((total_count+1)); }
+section() { echo ""; echo -e "${cyan}$1${reset}"; }
+
+has() { command -v "$1" >/dev/null 2>&1; }
+
+echo -e "${purple}┌─ cyberdeck-doctor ─────────────────────────────────────${reset}"
+
+section "Editor"
+if has code; then ok "VS Code" "$(code --version 2>/dev/null | head -1)"; else miss "VS Code" "not on PATH"; fi
+
+section "Prompt & font"
+if has starship; then ok "Starship" "$(starship --version 2>/dev/null | head -1)"; else miss "Starship" "not on PATH"; fi
+if [ -f ~/.config/starship.toml ]; then
+    if grep -q 'palette = "cyberdeck"' ~/.config/starship.toml 2>/dev/null; then
+        ok "starship.toml" "cyberdeck palette active"
+    else
+        ok "starship.toml" "present, but not the cyberdeck palette"
+    fi
+else
+    miss "starship.toml" "~/.config/starship.toml not found"
+fi
+if fc-list 2>/dev/null | grep -qiE "JetBrainsMono Nerd Font(,|:)"; then
+    ok "Nerd Font" "JetBrainsMono Nerd Font registered"
+else
+    miss "Nerd Font" "not found via fc-list"
+fi
+if fc-list 2>/dev/null | grep -qi "JetBrainsMono Nerd Font Mono"; then
+    miss "Nerd Font (bad variant)" "the broken 'Mono' patch is ALSO installed — remove it, it breaks letter-spacing in VTE terminals"
+fi
+
+section "Terminal palette"
+if command -v gsettings >/dev/null 2>&1 && gsettings list-schemas 2>/dev/null | grep -q "^org.gnome.Ptyxis$"; then
+    uuid=$(gsettings get org.gnome.Ptyxis default-profile-uuid 2>/dev/null | tr -d "'")
+    if [ -n "$uuid" ]; then
+        palette=$(gsettings get "org.gnome.Ptyxis.Profile:/org/gnome/Ptyxis/Profiles/$uuid/" palette 2>/dev/null | tr -d "'")
+        if [ "$palette" = "Cyberdeck" ]; then
+            ok "Ptyxis palette" "Cyberdeck active on default profile"
+        else
+            miss "Ptyxis palette" "profile palette is '$palette', not Cyberdeck"
+        fi
+    fi
+else
+    miss "Ptyxis palette" "Ptyxis not detected — palette is terminal-specific, set up manually for your terminal"
+fi
+
+section "Claude Code"
+if [ -f ~/.claude/statusline.sh ]; then ok "statusline.sh" "present"; else miss "statusline.sh" "~/.claude/statusline.sh not found"; fi
+if [ -f ~/.claude/settings.json ] && python3 -c "import json,sys; d=json.load(open('$HOME/.claude/settings.json')); sys.exit(0 if 'statusLine' in d else 1)" 2>/dev/null; then
+    ok "statusLine config" "wired in ~/.claude/settings.json"
+else
+    miss "statusLine config" "no statusLine key in ~/.claude/settings.json"
+fi
+
+section "Modern CLI tools"
+for t in eza bat fzf zoxide; do
+    if has "$t"; then ok "$t" "$($t --version 2>/dev/null | head -1)"; else miss "$t" "not on PATH"; fi
+done
+
+section "git delta"
+if has delta; then ok "delta" "$(delta --version 2>/dev/null)"; else miss "delta" "not on PATH"; fi
+if [ "$(git config --get core.pager 2>/dev/null)" = "delta" ]; then
+    ok "git core.pager" "set to delta"
+else
+    miss "git core.pager" "not set to delta"
+fi
+
+section "Zellij"
+if has zellij; then ok "zellij" "$(zellij --version 2>/dev/null)"; else miss "zellij" "not on PATH"; fi
+if [ -f ~/.config/zellij/config.kdl ] && grep -q 'theme "cyberdeck"' ~/.config/zellij/config.kdl 2>/dev/null; then
+    ok "zellij config" "cyberdeck theme active"
+else
+    miss "zellij config" "~/.config/zellij/config.kdl missing or not themed"
+fi
+
+section "btop"
+if has btop; then ok "btop" "$(btop --version 2>/dev/null | head -1)"; else miss "btop" "not on PATH"; fi
+if [ -f ~/.config/btop/themes/cyberdeck.theme ]; then ok "btop theme file" "present"; else miss "btop theme file" "~/.config/btop/themes/cyberdeck.theme not found"; fi
+if [ -f ~/.config/btop/btop.conf ] && grep -q 'color_theme = "cyberdeck"' ~/.config/btop/btop.conf 2>/dev/null; then
+    ok "btop.conf" "color_theme = cyberdeck"
+else
+    miss "btop.conf" "color_theme not set to cyberdeck"
+fi
+
+section "Shell aliases"
+if [ -f ~/.bash_aliases ] && grep -q "devhelp" ~/.bash_aliases 2>/dev/null; then
+    ok "~/.bash_aliases" "present, devhelp/dh available"
+else
+    miss "~/.bash_aliases" "missing or doesn't have devhelp"
+fi
+if grep -q "bash_aliases" ~/.bashrc 2>/dev/null; then
+    ok "~/.bashrc sourcing" "sources ~/.bash_aliases"
+else
+    miss "~/.bashrc sourcing" "~/.bashrc doesn't source ~/.bash_aliases"
+fi
+
+section "GitHub CLI"
+if has gh; then
+    ok "gh" "$(gh --version 2>/dev/null | head -1)"
+    if gh auth status >/dev/null 2>&1; then
+        ok "gh auth" "authenticated"
+    else
+        miss "gh auth" "not logged in — run: gh auth login"
+    fi
+else
+    miss "gh" "not on PATH"
+fi
+
+echo ""
+echo -e "${purple}└────────────────────────────────────────────────────────${reset}"
+echo -e "${grey}${ok_count}/${total_count} checks passed${reset}"

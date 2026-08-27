@@ -22,6 +22,8 @@ identically whether or not you have root on the machine.
 | zellij | Themed terminal multiplexer |
 | btop | Themed system monitor |
 | bash aliases | Git/Docker/Python/Node/nav shortcuts + a `dh` command that prints all of them |
+| GitHub CLI | Installed and ready for you to run `gh auth login` (this one step stays manual, on purpose) |
+| `cyberdeck-doctor` | Always installed — a `doctor` command that reports what's actually configured vs missing |
 
 ## Using it
 
@@ -59,7 +61,8 @@ that a fixed script can't safely special-case for every environment.
     ├── cyberdeck.theme        # btop
     ├── zellij-config.kdl
     ├── Cyberdeck.palette      # Ptyxis 16-color palette
-    └── gitconfig-delta.txt
+    ├── gitconfig-delta.txt
+    └── cyberdeck-doctor         # status-check command, installed unconditionally
 ```
 
 ## Known gotchas

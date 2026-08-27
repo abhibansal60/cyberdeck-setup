@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 # ~/.bash_aliases — dev shortcuts. Run `dh` or `devhelp` to list everything below.
+# Run `doctor` to check what's installed/configured vs missing.
 # Sourced automatically by ~/.bashrc.
+
+alias doctor='cyberdeck-doctor'
 
 # ---------------------------------------------------------------------------
 # Claude Code
@@ -213,6 +216,7 @@ devhelp() {
     print_row "myip"   "curl -s ifconfig.me"
     print_row "reload" "source ~/.bashrc"
     print_row "path"   "print \$PATH, one entry per line"
+    print_row "doctor" "check what's installed/configured vs missing"
     echo -e "${purple}└────────────────────────────────────────────────────────${reset}"
     echo -e "${grey}source: ~/.bash_aliases  ·  edit it and run 'reload' to apply${reset}"
 }
