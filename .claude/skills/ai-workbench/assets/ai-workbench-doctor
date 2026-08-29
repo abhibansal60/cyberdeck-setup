@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# cyberdeck-doctor — reports what's installed/configured vs missing for the
-# Cyberdeck Setup skill. Safe to run any time; makes no changes.
+# ai-workbench-doctor — reports what's installed/configured vs missing for the
+# AI Workbench skill. Safe to run any time; makes no changes.
 
 purple='\033[1;38;2;157;75;255m'
 green='\033[1;38;2;57;255;20m'
@@ -19,7 +19,7 @@ section() { echo ""; echo -e "${cyan}$1${reset}"; }
 
 has() { command -v "$1" >/dev/null 2>&1; }
 
-echo -e "${purple}┌─ cyberdeck-doctor ─────────────────────────────────────${reset}"
+echo -e "${purple}┌─ ai-workbench-doctor ─────────────────────────────────────${reset}"
 
 section "Editor"
 if has code; then ok "VS Code" "$(code --version 2>/dev/null | head -1)"; else miss "VS Code" "not on PATH"; fi
@@ -27,10 +27,10 @@ if has code; then ok "VS Code" "$(code --version 2>/dev/null | head -1)"; else m
 section "Prompt & font"
 if has starship; then ok "Starship" "$(starship --version 2>/dev/null | head -1)"; else miss "Starship" "not on PATH"; fi
 if [ -f ~/.config/starship.toml ]; then
-    if grep -q 'palette = "cyberdeck"' ~/.config/starship.toml 2>/dev/null; then
-        ok "starship.toml" "cyberdeck palette active"
+    if grep -q 'palette = "ai-workbench"' ~/.config/starship.toml 2>/dev/null; then
+        ok "starship.toml" "ai-workbench palette active"
     else
-        ok "starship.toml" "present, but not the cyberdeck palette"
+        ok "starship.toml" "present, but not the ai-workbench palette"
     fi
 else
     miss "starship.toml" "~/.config/starship.toml not found"
@@ -49,10 +49,10 @@ if command -v gsettings >/dev/null 2>&1 && gsettings list-schemas 2>/dev/null | 
     uuid=$(gsettings get org.gnome.Ptyxis default-profile-uuid 2>/dev/null | tr -d "'")
     if [ -n "$uuid" ]; then
         palette=$(gsettings get "org.gnome.Ptyxis.Profile:/org/gnome/Ptyxis/Profiles/$uuid/" palette 2>/dev/null | tr -d "'")
-        if [ "$palette" = "Cyberdeck" ]; then
-            ok "Ptyxis palette" "Cyberdeck active on default profile"
+        if [ "$palette" = "AI Workbench" ]; then
+            ok "Ptyxis palette" "AI Workbench active on default profile"
         else
-            miss "Ptyxis palette" "profile palette is '$palette', not Cyberdeck"
+            miss "Ptyxis palette" "profile palette is '$palette', not AI Workbench"
         fi
     fi
 else
@@ -99,19 +99,19 @@ fi
 
 section "Zellij"
 if has zellij; then ok "zellij" "$(zellij --version 2>/dev/null)"; else miss "zellij" "not on PATH"; fi
-if [ -f ~/.config/zellij/config.kdl ] && grep -q 'theme "cyberdeck"' ~/.config/zellij/config.kdl 2>/dev/null; then
-    ok "zellij config" "cyberdeck theme active"
+if [ -f ~/.config/zellij/config.kdl ] && grep -q 'theme "ai-workbench"' ~/.config/zellij/config.kdl 2>/dev/null; then
+    ok "zellij config" "ai-workbench theme active"
 else
     miss "zellij config" "~/.config/zellij/config.kdl missing or not themed"
 fi
 
 section "btop"
 if has btop; then ok "btop" "$(btop --version 2>/dev/null | head -1)"; else miss "btop" "not on PATH"; fi
-if [ -f ~/.config/btop/themes/cyberdeck.theme ]; then ok "btop theme file" "present"; else miss "btop theme file" "~/.config/btop/themes/cyberdeck.theme not found"; fi
-if [ -f ~/.config/btop/btop.conf ] && grep -q 'color_theme = "cyberdeck"' ~/.config/btop/btop.conf 2>/dev/null; then
-    ok "btop.conf" "color_theme = cyberdeck"
+if [ -f ~/.config/btop/themes/ai-workbench.theme ]; then ok "btop theme file" "present"; else miss "btop theme file" "~/.config/btop/themes/ai-workbench.theme not found"; fi
+if [ -f ~/.config/btop/btop.conf ] && grep -q 'color_theme = "ai-workbench"' ~/.config/btop/btop.conf 2>/dev/null; then
+    ok "btop.conf" "color_theme = ai-workbench"
 else
-    miss "btop.conf" "color_theme not set to cyberdeck"
+    miss "btop.conf" "color_theme not set to ai-workbench"
 fi
 
 section "Shell aliases"

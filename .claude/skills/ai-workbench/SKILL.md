@@ -1,9 +1,9 @@
 ---
-name: cyberdeck-setup
-description: Sets up a matrix-green / cyber-purple "Cyberdeck" developer environment on Linux — Starship prompt, a correctly-metriced Nerd Font, a matching 16-color terminal palette, a Claude Code status line, modern CLI tools (eza, bat, fzf, zoxide), git delta, zellij, btop, and bash aliases with a `dh` help command. Use when the user asks to set up, theme, or customize their terminal/shell/dev environment on Linux, or wants a "cyberdeck" or similarly-themed dev machine.
+name: ai-workbench
+description: Sets up a matrix-green / cyber-purple "AI Workbench" developer environment on Linux — Starship prompt, a correctly-metriced Nerd Font, a matching 16-color terminal palette, a Claude Code status line, modern CLI tools (eza, bat, fzf, zoxide), git delta, zellij, btop, and bash aliases with a `dh` help command. Use when the user asks to set up, theme, or customize their terminal/shell/dev environment on Linux, or wants an "AI Workbench" or similarly-themed dev machine.
 ---
 
-# Cyberdeck Setup
+# AI Workbench
 
 Builds a cohesive, matrix-green/cyber-purple terminal environment across every tool a
 Linux developer touches daily — one shared palette, not eleven mismatched ones.
@@ -84,7 +84,7 @@ Use `AskUserQuestion` (multiSelect) with one line per component, e.g.:
   below for what each one does): `mattpocock-skills`, `daily.dev`, `ponytail`,
   `caveman`, `humanizer`
 
-`cyberdeck-doctor` (see its own section near the end of Step 2) is **not** one of
+`ai-workbench-doctor` (see its own section near the end of Step 2) is **not** one of
 these choices — it's installed unconditionally at the end, since it's the tool for
 checking the state of everything else, including pieces the user chose to skip.
 
@@ -209,18 +209,18 @@ dropped into a specific directory, referenced by profile:
 
 ```bash
 mkdir -p ~/.local/share/org.gnome.Ptyxis/palettes
-cp assets/Cyberdeck.palette ~/.local/share/org.gnome.Ptyxis/palettes/Cyberdeck.palette
+cp assets/AI-Workbench.palette ~/.local/share/org.gnome.Ptyxis/palettes/AI-Workbench.palette
 
 UUID=$(gsettings get org.gnome.Ptyxis default-profile-uuid | tr -d "'")
-gsettings set "org.gnome.Ptyxis.Profile:/org/gnome/Ptyxis/Profiles/$UUID/" palette 'Cyberdeck'
+gsettings set "org.gnome.Ptyxis.Profile:/org/gnome/Ptyxis/Profiles/$UUID/" palette 'AI Workbench'
 ```
 
 (`ptyxis --import-palette FILE` also works if the file isn't already at that exact
 path — but don't call it if you just wrote the file there yourself, it'll error
 claiming the file already exists.)
 
-For any other terminal, still write `assets/Cyberdeck.palette` somewhere durable
-(e.g. `~/.config/cyberdeck/Cyberdeck.palette`) and tell the user it's a standard
+For any other terminal, still write `assets/AI-Workbench.palette` somewhere durable
+(e.g. `~/.config/ai-workbench/AI-Workbench.palette`) and tell the user it's a standard
 16-color-plus-bg/fg/cursor palette they can translate into their terminal's own format
 (most terminals — kitty, Alacritty, Konsole — have a "import palette"/theme mechanism,
 just not a shared file format).
@@ -334,12 +334,12 @@ we provide our own.
 
 ```bash
 mkdir -p ~/.config/btop/themes
-cp assets/cyberdeck.theme ~/.config/btop/themes/cyberdeck.theme
+cp assets/ai-workbench.theme ~/.config/btop/themes/ai-workbench.theme
 if [ ! -f ~/.config/btop/btop.conf ]; then
   btop --default-config > ~/.config/btop/btop.conf
 fi
 # then set (don't blind-overwrite the whole conf if it already existed):
-sed -i 's/^color_theme = .*/color_theme = "cyberdeck"/' ~/.config/btop/btop.conf
+sed -i 's/^color_theme = .*/color_theme = "ai-workbench"/' ~/.config/btop/btop.conf
 ```
 
 Validate the theme file structurally (btop needs a real TTY to run, so this is the
@@ -352,11 +352,11 @@ Optional: alias `top`/`htop` to `btop` in the bash aliases step below.
 `assets/bash_aliases` is a complete, ready-to-use file (Claude Code aliases, git,
 docker, python/conda, node, navigation, the modern-CLI-tools aliases, zellij, system/
 network, utility functions, and the `devhelp`/`dh` function that prints all of it in
-the cyberdeck palette).
+the ai-workbench palette).
 
 If `~/.bash_aliases` doesn't exist, copy it directly. If it does, **read it first** —
 either merge in only the sections/aliases the user doesn't already have, or append the
-whole file under a clearly marked `# --- cyberdeck-setup additions ---` block, and
+whole file under a clearly marked `# --- ai-workbench additions ---` block, and
 flag any alias name collisions to the user instead of silently overriding them.
 
 Ensure `~/.bashrc` sources it (standard Debian/Ubuntu bashrc already has this — check
@@ -445,21 +445,21 @@ confirms it resolved correctly.
 
 To remove one later: `claude plugin uninstall <plugin-name>`.
 
-### `cyberdeck-doctor` (always installed, regardless of Step 1 selections)
+### `ai-workbench-doctor` (always installed, regardless of Step 1 selections)
 
-Copy `assets/cyberdeck-doctor` to `~/.local/bin/cyberdeck-doctor` and `chmod +x` it.
+Copy `assets/ai-workbench-doctor` to `~/.local/bin/ai-workbench-doctor` and `chmod +x` it.
 It's a standalone, read-only status script — running it makes no changes, so it's safe
 to install and run even for components the user chose not to set up (they'll just show
 as missing, which is correct and useful information, not an error).
 
 It checks, per component: is the binary on `$PATH` (and its `--version`), is the
 relevant config file present, and — where it's cheap to check — whether that config
-file actually reflects the cyberdeck theme rather than just existing. It also
+file actually reflects the ai-workbench theme rather than just existing. It also
 specifically flags if the broken `NerdFontMono` variant is present (see **Known
 gotchas**), since that's a silent trap otherwise. It's already aliased as `doctor` in
 `assets/bash_aliases`.
 
-Two things worth knowing if you extend `cyberdeck-doctor` for a new component:
+Two things worth knowing if you extend `ai-workbench-doctor` for a new component:
 - Any `$(...)` output you show the user should be passed through the script's
   `strip_ansi` helper first — several tools (`btop --version`, some `delta` builds)
   embed their own ANSI color codes in `--version` output, which garbles the doctor
@@ -479,7 +479,7 @@ Before reporting done, actually re-check everything, don't just trust each step'
   `starship prompt --status=0`, a mock statusline payload, a real diff through delta)
 - Confirm nothing in `~/.bashrc`/`~/.bash_aliases`/`~/.gitconfig` got duplicated if this
   skill is being re-run on a machine it already touched
-- Finish with `cyberdeck-doctor` itself and read its output — it's the single source
+- Finish with `ai-workbench-doctor` itself and read its output — it's the single source
   of truth for what actually landed vs what silently didn't
 
 ## Step 4 — Report back
@@ -517,5 +517,5 @@ Tell the user plainly:
   chat lives in that conversation's history, so they can decide whether to rotate it.
 - **`--version` output isn't always plain text.** Some tools (`btop`, some `delta`
   builds) embed their own ANSI color codes even when piped. If you're composing that
-  output into another colored line (like `cyberdeck-doctor` does), strip escape codes
+  output into another colored line (like `ai-workbench-doctor` does), strip escape codes
   first (`sed -E 's/\x1b\[[0-9;]*m//g'`) or the two color schemes will visibly clash.

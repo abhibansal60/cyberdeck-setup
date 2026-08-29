@@ -3,7 +3,7 @@
 # Run `doctor` to check what's installed/configured vs missing.
 # Sourced automatically by ~/.bashrc.
 
-alias doctor='cyberdeck-doctor'
+alias doctor='ai-workbench-doctor'
 
 # ---------------------------------------------------------------------------
 # Claude Code

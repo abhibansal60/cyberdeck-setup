@@ -1,4 +1,4 @@
-# "CYBERDECK" — matches ~/.config/starship.toml / Ptyxis palette / zellij / Claude status line.
+# "AI WORKBENCH" — matches ~/.config/starship.toml / Ptyxis palette / zellij / Claude status line.
 
 # Main background, empty for terminal default
 theme[main_bg]="#0d0221"

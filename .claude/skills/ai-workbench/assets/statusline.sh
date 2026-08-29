@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # ~/.claude/statusline.sh
 #
-# CYBERDECK status line for Claude Code.
+# AI WORKBENCH status line for Claude Code.
 # Mirrors the palette used in ~/.config/starship.toml:
 #   soft_green   #00ff9f  -> directory, 5h-limit bar (healthy)
 #   cyber_purple #9d4bff  -> git branch

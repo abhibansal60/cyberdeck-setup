@@ -1,7 +1,7 @@
-// ~/.config/zellij/config.kdl — "CYBERDECK" theme, matching starship.toml / Ptyxis palette / status line.
+// ~/.config/zellij/config.kdl — "AI WORKBENCH" theme, matching starship.toml / Ptyxis palette / status line.
 
 themes {
-    cyberdeck {
+    ai-workbench {
         fg 228 224 240       // #e4e0f0 soft lavender-white
         bg 13 2 33           // #0d0221 bg_shade
         black 23 10 46       // #170a2e
@@ -16,7 +16,7 @@ themes {
     }
 }
 
-theme "cyberdeck"
+theme "ai-workbench"
 
 mouse_mode true
 pane_frames true

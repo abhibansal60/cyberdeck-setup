@@ -1,5 +1,5 @@
 # ~/.config/starship.toml
-# "CYBERDECK" — a matrix-green / cyber-purple prompt for long AI dev sessions.
+# "AI WORKBENCH" — a matrix-green / cyber-purple prompt for long AI dev sessions.
 # Two-line layout: context line, then a clean input line.
 
 "$schema" = 'https://starship.rs/config-schema.json'
@@ -11,9 +11,9 @@ format = """
 right_format = "$time"
 
 add_newline = true
-palette = "cyberdeck"
+palette = "ai-workbench"
 
-[palettes.cyberdeck]
+[palettes.ai-workbench]
 matrix_green   = "#39ff14"
 soft_green     = "#00ff9f"
 cyber_purple   = "#9d4bff"

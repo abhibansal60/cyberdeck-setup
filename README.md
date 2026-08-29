@@ -4,10 +4,8 @@ A Claude Code **skill** that builds a cohesive matrix-green / cyber-purple devel
 environment on Linux — one shared color palette across your prompt, terminal, editor,
 system monitor, and diffs, instead of eleven mismatched default themes.
 
-> Renamed from `cyberdeck-setup` (GitHub repo only, for now). The skill folder,
-> `SKILL.md`'s internal name, and asset filenames below (`cyberdeck-doctor`,
-> `cyberdeck.theme`, `Cyberdeck.palette`) still say "cyberdeck" — that deeper
-> rename is a separate, bigger change, not done yet.
+> Formerly `cyberdeck-setup`. Renamed throughout — GitHub repo, skill folder,
+> `SKILL.md`'s internal name, and every asset filename/identifier.
 
 Everything installs to `~/.local`. No `sudo`, no `apt`, no `snap` — every tool is
 fetched as a portable binary/tarball from its own GitHub releases page, so this works
@@ -29,11 +27,11 @@ identically whether or not you have root on the machine.
 | bash aliases | Git/Docker/Python/Node/nav shortcuts + a `dh` command that prints all of them |
 | GitHub CLI | Installed and ready for you to run `gh auth login` (this one step stays manual, on purpose) |
 | Claude Code plugins | Optional: `mattpocock-skills`, `daily.dev`, `ponytail`, `caveman`, `humanizer` — pick any subset |
-| `cyberdeck-doctor` | Always installed — a `doctor` command that reports what's actually configured vs missing |
+| `ai-workbench-doctor` | Always installed — a `doctor` command that reports what's actually configured vs missing |
 
 ## Screenshot
 
-![Claude Code with the cyberdeck status line](docs/screenshots/claude-code-statusline.png)
+![Claude Code with the ai-workbench status line](docs/screenshots/claude-code-statusline.png)
 
 Themed status line: directory, git branch, model, context-usage bar, and the
 Claude.ai 5-hour rate-limit bar — all in the matrix-green / cyber-purple palette.
@@ -44,9 +42,9 @@ This is a Claude Code skill, not a shell script — you run it *through* Claude 
 it can detect your specific environment (terminal emulator, architecture, what's
 already installed) and ask what you actually want before touching anything.
 
-1. Copy `.claude/skills/cyberdeck-setup/` into your own project's `.claude/skills/`
+1. Copy `.claude/skills/ai-workbench/` into your own project's `.claude/skills/`
    directory (or your global `~/.claude/skills/`).
-2. In Claude Code, ask it to set up the cyberdeck environment (or invoke the skill by
+2. In Claude Code, ask it to set up the ai-workbench environment (or invoke the skill by
    name if your setup supports that).
 3. Claude will detect your environment, ask which pieces you want, and walk through
    the runbook in `SKILL.md` — installing only what you selected, verifying each step,
@@ -65,17 +63,17 @@ that a fixed script can't safely special-case for every environment.
 ## Structure
 
 ```
-.claude/skills/cyberdeck-setup/
+.claude/skills/ai-workbench/
 ├── SKILL.md              # the runbook Claude follows
 └── assets/                # tested, ready-to-copy config templates
     ├── starship.toml
     ├── bash_aliases
     ├── statusline.sh
-    ├── cyberdeck.theme        # btop
+    ├── ai-workbench.theme        # btop
     ├── zellij-config.kdl
-    ├── Cyberdeck.palette      # Ptyxis 16-color palette
+    ├── AI-Workbench.palette      # Ptyxis 16-color palette
     ├── gitconfig-delta.txt
-    └── cyberdeck-doctor         # status-check command, installed unconditionally
+    └── ai-workbench-doctor         # status-check command, installed unconditionally
 ```
 
 ## Known gotchas
