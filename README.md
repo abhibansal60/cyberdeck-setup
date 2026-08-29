@@ -23,7 +23,15 @@ identically whether or not you have root on the machine.
 | btop | Themed system monitor |
 | bash aliases | Git/Docker/Python/Node/nav shortcuts + a `dh` command that prints all of them |
 | GitHub CLI | Installed and ready for you to run `gh auth login` (this one step stays manual, on purpose) |
+| Claude Code plugins | Optional: `mattpocock-skills`, `daily.dev`, `ponytail`, `caveman`, `humanizer` — pick any subset |
 | `cyberdeck-doctor` | Always installed — a `doctor` command that reports what's actually configured vs missing |
+
+## Screenshot
+
+![Claude Code with the cyberdeck status line](docs/screenshots/claude-code-statusline.png)
+
+Themed status line: directory, git branch, model, context-usage bar, and the
+Claude.ai 5-hour rate-limit bar — all in the matrix-green / cyber-purple palette.
 
 ## Using it
 
