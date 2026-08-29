@@ -59,12 +59,29 @@ else
     miss "Ptyxis palette" "Ptyxis not detected — palette is terminal-specific, set up manually for your terminal"
 fi
 
+plugin_enabled() {
+    [ -f ~/.claude/settings.json ] && python3 -c "
+import json, sys
+d = json.load(open('$HOME/.claude/settings.json'))
+sys.exit(0 if any(k.startswith('$1@') and v for k, v in d.get('enabledPlugins', {}).items()) else 1)
+" 2>/dev/null
+}
+
 section "Claude Code"
 if [ -f ~/.claude/statusline.sh ]; then ok "statusline.sh" "present"; else miss "statusline.sh" "~/.claude/statusline.sh not found"; fi
 if [ -f ~/.claude/settings.json ] && python3 -c "import json,sys; d=json.load(open('$HOME/.claude/settings.json')); sys.exit(0 if 'statusLine' in d else 1)" 2>/dev/null; then
     ok "statusLine config" "wired in ~/.claude/settings.json"
 else
     miss "statusLine config" "no statusLine key in ~/.claude/settings.json"
+fi
+# Only relevant once the daily.dev plugin is enabled — it supplies the
+# second sub-script statusline-combined.sh fans out to.
+if plugin_enabled "daily.dev"; then
+    if [ -f ~/.claude/statusline-combined.sh ]; then
+        ok "statusline-combined.sh" "present (daily.dev headlines wired in)"
+    else
+        miss "statusline-combined.sh" "daily.dev enabled but combined statusline not set up — run daily.dev's statusline skill"
+    fi
 fi
 
 section "Modern CLI tools"
@@ -120,6 +137,15 @@ if has gh; then
 else
     miss "gh" "not on PATH"
 fi
+
+section "Claude Code plugins (optional)"
+for p in mattpocock-skills daily.dev ponytail caveman humanizer; do
+    if plugin_enabled "$p"; then
+        ok "$p" "enabled"
+    else
+        miss "$p" "not installed — optional, see SKILL.md"
+    fi
+done
 
 echo ""
 echo -e "${purple}└────────────────────────────────────────────────────────${reset}"
