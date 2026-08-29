@@ -80,6 +80,9 @@ Use `AskUserQuestion` (multiSelect) with one line per component, e.g.:
 - **btop** — themed system monitor
 - **bash aliases + `dh` help command** — dev shortcuts (git, docker, npm, etc.) plus a colorized help listing
 - **GitHub CLI (`gh`)** — installed and ready for the user to authenticate
+- **Claude Code plugins** — optional, pick any subset (see **Claude Code plugins**
+  below for what each one does): `mattpocock-skills`, `daily.dev`, `ponytail`,
+  `caveman`, `humanizer`
 
 `cyberdeck-doctor` (see its own section near the end of Step 2) is **not** one of
 these choices — it's installed unconditionally at the end, since it's the tool for
@@ -231,6 +234,12 @@ key already exists, ask the user before replacing it.
 cp assets/statusline.sh ~/.claude/statusline.sh
 ```
 
+Renders `dir on branch │ model │ ctx ▓▓▓▓▓░░░░░ 48% │ 5h ▓▓░░░░░░░░ 20%` — block-meter
+bars for context-window usage and, when present, the Claude.ai subscription 5-hour
+rate-limit window. Bars go amber at 70%, red at 90%. The 5h segment only appears when
+`.rate_limits.five_hour` is in the payload — omit it entirely rather than showing a
+zeroed bar when a session doesn't report it.
+
 Merge (don't overwrite) the settings file — use a small Python/`jq` snippet that loads
 the existing JSON, sets `statusLine`, and writes it back, preserving every other key:
 
@@ -244,9 +253,10 @@ with open(path, "w") as f:
     json.dump(data, f, indent=2)
 ```
 
-Verify with a mock payload before declaring success:
+Verify with a mock payload before declaring success — include `rate_limits.five_hour`
+to exercise the 5h bar too:
 ```bash
-echo '{"model":{"display_name":"Claude Sonnet 5"},"workspace":{"current_dir":"'$HOME'"},"context_window":{"used_percentage":34}}' \
+echo '{"model":{"display_name":"Claude Sonnet 5"},"workspace":{"current_dir":"'$HOME'"},"context_window":{"used_percentage":34},"rate_limits":{"five_hour":{"used_percentage":20}}}' \
   | bash ~/.claude/statusline.sh
 ```
 Confirm colored output actually appears, not an error or blank line.
@@ -391,6 +401,49 @@ on GitHub afterward if that matters to them. Never `echo`, log, write to a file
 outside that one `gh auth login` invocation.
 
 Verify: `gh auth status` (exit 0 = authenticated).
+
+### Claude Code plugins (optional)
+
+Each plugin below is independent — install whichever subset the user picked in
+Step 1, skip the rest. Tell the user what each one *does* before they choose, don't
+just list names:
+
+- **`mattpocock-skills`** — a skill pack for engineering workflows: TDD (red-green-
+  refactor), debugging/diagnosis, code review, domain modeling (`CONTEXT.md`/ADRs),
+  merge-conflict resolution, prototyping. Marketplace repo: `mattpocock/skills`.
+- **`daily.dev`** — pulls real-time developer articles/trends into Claude's answers,
+  as a workaround for the model's training-data cutoff. Marketplace repo:
+  `dailydotdev/daily`.
+- **`ponytail`** — an always-on style guard that pushes every coding answer toward
+  the smallest solution that actually works (YAGNI, stdlib-first, no speculative
+  abstraction) instead of over-engineering. Intensity levels `lite`/`full`/`ultra`,
+  toggle with `/ponytail`. Marketplace repo: `DietrichGebert/ponytail`.
+- **`caveman`** — compresses Claude's own prose output (not code) into terse
+  fragments to cut response tokens, while keeping technical content exact. Same
+  `lite`/`full`/`ultra` levels, toggle with `/caveman`. Marketplace repo:
+  `JuliusBrussee/caveman`.
+- **`humanizer`** — rewrites AI-sounding prose (inflated claims, stock phrasing,
+  chatbot tics) into plain natural writing, without changing what it says.
+  Marketplace repo: `blader/humanizer`.
+
+**These change how Claude Code itself behaves, globally** — unlike every other
+component in this skill, there's no visual/terminal effect to preview, so lean
+harder on explaining behavior than usual before the user picks.
+
+For each plugin the user selects:
+```bash
+claude plugin marketplace add <owner/repo>     # e.g. DietrichGebert/ponytail
+claude plugin install <plugin-name>@<marketplace-name>   # e.g. ponytail@ponytail
+```
+The marketplace name defaults to the repo name; check `claude plugin marketplace list`
+if unsure what a given `add` registered it as. Installing enables it automatically —
+this writes `enabledPlugins` and `extraKnownMarketplaces` into `~/.claude/settings.json`
+itself, so don't hand-edit that file for this step.
+
+Verify: `claude plugin list` shows the plugin, and `claude plugin details <name>`
+confirms it resolved correctly.
+
+To remove one later: `claude plugin uninstall <plugin-name>`.
 
 ### `cyberdeck-doctor` (always installed, regardless of Step 1 selections)
 
