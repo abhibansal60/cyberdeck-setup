@@ -1,8 +1,13 @@
-# Cyberdeck Setup
+# AI Workbench
 
 A Claude Code **skill** that builds a cohesive matrix-green / cyber-purple developer
 environment on Linux — one shared color palette across your prompt, terminal, editor,
 system monitor, and diffs, instead of eleven mismatched default themes.
+
+> Renamed from `cyberdeck-setup` (GitHub repo only, for now). The skill folder,
+> `SKILL.md`'s internal name, and asset filenames below (`cyberdeck-doctor`,
+> `cyberdeck.theme`, `Cyberdeck.palette`) still say "cyberdeck" — that deeper
+> rename is a separate, bigger change, not done yet.
 
 Everything installs to `~/.local`. No `sudo`, no `apt`, no `snap` — every tool is
 fetched as a portable binary/tarball from its own GitHub releases page, so this works
@@ -87,6 +92,12 @@ palette-wiring step, a zsh variant, and additional themed tools are all welcome 
 follow the existing pattern in `SKILL.md`: detect, ask, install to `~/.local`, verify,
 report. PRs that add a new tool should ship a corresponding `assets/` template rather
 than having Claude regenerate the config from a text description each time.
+
+## See also
+
+[macify](https://github.com/abhibansal60/macify) — makes Ubuntu GNOME look like
+macOS (WhiteSur theme, dock, login screen). A separate concern on purpose: it
+needs `sudo` and touches system files, breaking this repo's rootless promise.
 
 ## License
 
